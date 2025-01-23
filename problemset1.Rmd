@@ -1,8 +1,4 @@
----
-editor_options: 
-  markdown: 
-    wrap: sentence
----
+Welcome! ~Problem set 1 answers by group 2~
 
 #exercise 1.2.5.
 Q1.
@@ -263,4 +259,4 @@ Saving 5.14 x 6.18 in image
 
 We can save as eps, ps, tex(pictex), pdf, jpeg, tiff, png, bmp, svg, or wmf(windows only).
 It depends on the device we use.
-This information can be found at ggplot2.tidyverse.org
+This information can be found at ggplot2.tidyverse.org.
