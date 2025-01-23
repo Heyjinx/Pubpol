@@ -1,19 +1,266 @@
 ---
-title: "R Notebook"
-output: html_notebook
+editor_options: 
+  markdown: 
+    wrap: sentence
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+#exercise 1.2.5.
+Q1.
+How many rows are in penguins?
+How many columns?
+A1.
+344 Rows and 8 Columns
 
 ```{r}
-plot(cars)
+glimpse(penguins)
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+Rows: 344 Columns: 8 \$ species <fct> Adelie, Adelie, Adelie, Adelie, Adelie, Adel… \$ island <fct> Torgersen, Torgersen, Torgersen, Torgersen, … \$ bill_length_mm <dbl> 39.1, 39.5, 40.3, NA, 36.7, 39.3, 38.9, 39.2… \$ bill_depth_mm <dbl> 18.7, 17.4, 18.0, NA, 19.3, 20.6, 17.8, 19.6… \$ flipper_length_mm <int> 181, 186, 195, NA, 193, 190, 181, 195, 193, … \$ body_mass_g <int> 3750, 3800, 3250, NA, 3450, 3650, 3625, 4675… \$ sex <fct> male, female, female, NA, female, male, fema…
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+Q2.
+What does the bill_depth_mm variable in the penguins data frame describe?
+A2.
+According to ?p
+enguins, the variable describes a number denoting bill depth in millimeters
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+Q3.
+Make a scatterplot of bill_depth_mm on the y-axis and bill_length_mm on the x-axis.
+A3.
 
+```{r}
+ggplot(data=penguins, mapping=aes(x=bill_length_mm, y=bill_depth_mm)) + geom_point()
+```
+
+Warning message: Removed 2 rows containing missing values or values outside the scale range (`geom_point()`).
+
+Q4.
+What happens if you make a scatterplot of species vs. bill_depth_mm?
+What might be a better choice of geom?
+
+```{r}
+ggplot(data=penguins, mapping=aes(x=species, y=bill_depth_mm)) + geom_point()
+```
+
+Q5.
+Why does the following give an error and how would you fix it?
+A5.
+It's because both the x-axis and the y-axis are not defined by the commands.
+
+```{r}
+ggplot(data=penguins) + geom_point()
+```
+
+Error in `geom_point()`: !
+Problem while setting up geom.
+ℹ Error occurred in the 1st layer.
+Caused by error in `compute_geom_1()`: !
+`geom_point()` requires the following missing aesthetics: x and y.
+
+Q6.
+What does the na.rm argument do in geom_point()?
+What is the default value of the argument?
+Create a scatterplot where you successfully use this argument set to TRUE.
+A6.
+
+```{r}
+geom_point()
+```
+
+geom_point: na.rm = FALSE stat_identity: na.rm = FALSE position_identity In the part 'na.rm', If FALSE, missing values are removed with a warning If TURE, missing values are removed without a warning.
+The default value is FALSE.
+
+```{r}
+ggplot(data=penguins, mapping=aes(x=species, y=bill_depth_mm)) + geom_point(na.rm = TRUE)
+```
+
+Compared to geom_point(), it does not show the warning message.
+ggplot(data=penguins, mapping=aes(x=species, y=bill_depth_mm)) + geom_point() Warning message: Removed 2 rows containing missing values or values outside the scale range (`geom_point()`).
+
+Q7.
+Add the following caption to the plot you made in the previous exercise: "Data come from the palmerpenguins package." A7.
+
+```{r}
+ggplot(data=penguins, mapping=aes(x=species, y=bill_depth_mm)) + geom_point() + labs(title = "Data come from the palmerpenguins package")
+```
+
+Q8.
+Recreate the following visualization.
+What aesthetic should bill_depth_mm be mapped to?
+And should it be mapped at the global level or at the geom level?
+A8.
+
+```{r}
+ggplot(data=penguins, mapping=aes(x=flipper_length_mm, y=body_mass_g)) + geom_point(aes(color=bill_depth_mm)) + geom_smooth()
+```
+
+geom_point(aes(color=bill_depth_mm)) \<- this should be mapped at the geom level.
+
+Q9.
+Run this code in your head and predict what the output will look like.
+Then, run the code in R and check your predictions.
+
+```{r}
+ggplot(data=penguins, mapping=aes(x=flipper_length_mm, y=body_mass_g, color=island)) + geom_point() + geom_smooth(se=FALSE)
+```
+
+a scatterplot without display of confidence interval around smooth.
+Three colors of dots and trend lines depending on island.
+
+Q10.
+Will these two graph look different?
+Why/Why not?
+
+```{r}
+ggplot(data=penguins, mapping=aes(x=flipper_length_mm, y=body_mass_g)) + geom_point() + geom_smooth()
+```
+
+```{r}
+ggplot() + geom_point(data=penguins, mapping=aes(x=flipper_length_mm, y=body_mass_g)) + geom_smooth(data=penguins, mapping=aes(x=flipper_length_mm, y=body_mass_g))
+```
+
+These two graphs look same.
+It because they are using the same data sets and same mapping design.
+The only difference is whether they defined the data sets and mapping design at the global level or at the geom level.
+
+#exercise 1.4.3.
+
+Q1.Make a bar plot of species of penguins, where you assign species to the y aesthetic.
+How is this plot different?
+A1.
+bar goes horizontally.
+
+```{r}
+ggplot(penguins, aes(y=species)) + geom_bar()
+```
+
+Q2.
+How are the following two plots different?
+Which aesthetic, color or fill, is more useful for changing the color of bars?
+A2.
+ggplot(penguins, aes(x=species)) + geom_bar(fill = "red") is more useful because the other one just changes the color of the edge.
+
+Q3.
+What does the bins argument in geom_histogram() do?
+A3.
+'Bins' means the number of bins.
+It is overridden by 'binwidth'.
+Defaults to 30.
+In 'binwidth', the default is to use the number of bins in 'bins'.
+
+Q4.
+Make a histogram of the carat variable in the diamonds dataset that is available when you load the tidyverse package.
+Experiment with different binwidths.
+What binwidth reveals the most intersting patterns?
+A4.
+
+```{r}
+ggplot(diamonds, aes(x=carat)) + geom_histogram()
+`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+ ggplot(diamonds, aes(x=carat)) + geom_histogram(binwidth = 10)
+ ggplot(diamonds, aes(x=carat)) + geom_histogram(binwidth = 1)
+ ggplot(diamonds, aes(x=carat)) + geom_histogram(binwidth = 0.01)
+ ggplot(diamonds, aes(x=carat)) + geom_histogram(binwidth = 0.1)
+ ggplot(diamonds, aes(x=carat)) + geom_histogram(binwidth = 0.05)
+ ggplot(diamonds, aes(x=carat)) + geom_histogram(binwidth = 0.02)
+```
+
+personally, I prefer binwidth = 0.2 because it represents ups and downs in frequencies.
+
+#exercise 1.5.5.
+Q1.
+The mpg data frame that is bundled with the ggplot2 package contains 234 observations collected by the US Environmental Protection Agency on 38 car models.
+Which variables in mpg are categorical?
+Which variables are numerical?
+How can you see this information when you run mpg?
+A1.
+Categorical: manufacturer name, model name, type of transmission, the type of drive train, fule type, type of car Numerical: engine displacement, in liters, year of manufacture, number of cylinderes, city miles per gallon, highway miles per gallon Before we run mpg commands, we have to consider whether variables are categorical or numerical because there are cases where we cannot compare variables that have different characteristics.
+
+Q2.
+Make a scatterplot of hwy vs. displ using the mpg data frame.
+Next, map a third, numerical variable to color, then size, then both color and size, then shape.
+How do these aesthetics behave differently for categorical vs. numerical variables?
+A2.
+
+```{r}
+> ggplot(mpg, mapping=aes(x=hwy, y=displ)) + geom_point(aes(color=year))
+> ggplot(mpg, mapping=aes(x=hwy, y=displ)) + geom_point(aes(size=year))
+> ggplot(mpg, mapping=aes(x=hwy, y=displ)) + geom_point(aes(color=year, size=year))
+> ggplot(mpg, mapping=aes(x=hwy, y=displ)) + geom_point(aes(size =year))
+```
+
+Q3.
+In the scatterplot of hwy vs. displ, what happens if you map a third variable to linewidth?
+A3.
+It says linewidth in scatterplot is unknown, and ignores the commands.
+
+```{r}
+ggplot(mpg, mapping=aes(x=hwy, y=displ)) + geom_point(linewidth=year)
+Warning message:
+In geom_point(linewidth = year) :
+  Ignoring unknown parameters: `linewidth`
+```
+
+Q4.
+What happens if you map the same variable to multiple aesthetics?
+A4.Same thing happens.
+
+```{r}
+ggplot(mpg, mapping=aes(x=hwy, y=displ)) + geom_point(size=year, color=year, linewidth=year)
+Error in `geom_point()`:
+! Problem while setting up geom aesthetics.
+ℹ Error occurred in the 1st layer.
+Caused by error in `rep()`:
+! attempt to replicate an object of type 'closure'
+Run `rlang::last_trace()` to see where the error occurred.
+Warning message:
+In geom_point(size = year, color = year, linewidth = year) :
+  Ignoring unknown parameters: `linewidth`
+```
+
+Q5.Make a scatterplot of bill_depth_mm vs. bill_length_mm and color the points by species.
+What does adding coloring by species reveal about the relatioinship between these two variables?
+What about faceting by species?
+A5.
+
+```{r}
+ggplot(penguins, mapping=aes(x=bill_depth_mm, y=bill_length_mm, color=species)) + geom_point()
+```
+
+```{r}
+ggplot(penguins, aes(x=bill_depth_mm, y=bill_length_mm)) + geom_point() + facet_wrap(~species)
+```
+
+Q6.What does the following yield two separate legends?
+How would you fix it to combine the two legends?
+A6.We can remove the last part "labs(color="species")" cecause this part is already defined at the ggplot, "(mapping=aes(color=species))".
+
+#exercise 1.6.1.
+
+Q1.Run the following lines of code.
+Which of the two plots is saved as mpg-plot.png?
+Why?
+A1.
+The second one replaced the first one.
+Therefore, the second plot is saved as mpg-plot.
+
+```{r}
+> ggplot(mpg, aes(x=class)) + geom_bar()
+> ggplot(mpg, aes(x=cty, y=hwy)) + geom_point()
+> ggsave("mpg-plot.png")
+Saving 5.14 x 6.18 in image
+```
+
+Q2.
+What do you need to change in the code above to save the plot as a PDF instead of PNG?
+How could you find out what types of image files would work in ggsave()?
+A2.
+Change png to pdf.
+
+```{r}
+> ggsave("mpg-plot.pdf")
+Saving 5.14 x 6.18 in image
+```
+
+We can save as eps, ps, tex(pictex), pdf, jpeg, tiff, png, bmp, svg, or wmf(windows only).
+It depends on the device we use.
+This information can be found at ggplot2.tidyverse.org
