@@ -1,16 +1,20 @@
-Welcome! ~Problem set 1 answers by group 2~
+
+#Welcome! <Problem set 1 answers by group 2>
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(palmerpenguins)
+library(ggthemes)
+```
+
 
 #exercise 1.2.5.
 Q1.
 How many rows are in penguins?
 How many columns?
 A1.
-344 Rows and 8 Columns
-
-```{r}
-glimpse(penguins)
-```
-
+344 Rows and 8 Columns are found using glimpse(penguins)
 Rows: 344 Columns: 8 
 \$ species <fct> Adelie, Adelie, Adelie, Adelie, Adelie, Adel… 
 \$ island <fct> Torgersen, Torgersen, Torgersen, Torgersen, … \$ bill_length_mm <dbl> 39.1, 39.5, 40.3, NA, 36.7, 39.3, 38.9, 39.2… 
