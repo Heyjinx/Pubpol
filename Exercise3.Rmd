@@ -1,0 +1,195 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+# exercise 3
+
+# 3.2.5.
+Q1. In a single pipeline for each condition, find all flights that meet condition:
+
+A1. Use filter() to code each conditions. 
+-Had an arrival delay of two or more hours (arr_delay >=120)
+```{r}
+flights |> filter(arr_delay >= 120)
+```
+
+-Flew to Houston (IAH or HOU) (dest == "IAH" | dest == "HOU")
+```{r}
+flights |> filter(dest == "IAH" | dest == "HOU")
+```
+
+-Were operated by United, American, or Delta (carrier %in% c("UA", "AA", "DL"))
+```{r}
+flights |> filter(carrier %in% c("UA", "AA", "DL"))
+```
+
+-Departed in summer (month %in% c(7, 8, 9))
+```{r}
+flights |> filter(month %in% c(7, 8, 9))
+```
+
+-Arrived more than two hours late but didn't leave late (arr_delay > 120 & dep_delay <= 0) 
+```{r}
+flights |> filter(arr_delay > 120 & dep_delay <= 0)
+```
+
+-Were delayed by at least an hour, but made up over 30 minutes in flight (dep_delay >= 60 & dep_delay - arr_delay >= 30)
+```{r}
+flights |> filter(dep_delay >= 60 & dep_delay - arr_delay >= 30)
+```
+
+Q2. Sort flights to find the flights with the longest departure delays. Find the flights that left earliest in the morning.
+
+A2. 
+Sorting flights that had the longest departure delays. The first result is the one we are looking for.
+```{r}
+flights |> arrange(desc(dep_delay))
+```
+
+Sorting flights that left earliest in the morning
+Use 'time_hour' & find the earliest schedule in the morning (5 A.M.)
+# from https://rdrr.io/cran/nycflights13/man/flights.html)
+
+```{r}
+flights |> arrange(time_hour)
+```
+Q3. Sort flights to find the fastest flights.
+A3. The velocity of the flight can be calculated by dividing the distance by time
+```{r}
+flights |> arrange(desc(distance/air_time))
+```
+
+Q4. Was there a flight on everyday of 2013?
+A4. Use distinct() to remove duplicate rows of month and day, and check if there is a missing day. Thankfully, there are 365 rows meaning that flights were on everyday.
+```{r}
+flights |> distinct(month, day)
+```
+Q5. Which flights traveled the farthest distance? Which traveled the least distance?
+A5. 
+Finding the flight that traveled the farthest distance
+It was the flights from JFK to HNL with the distance of 4983 miles. (N380HA, N384HA, N381HA, N385HA, N389HA, etc) 
+```{r}
+flights |> arrange(desc(distance))
+```
+
+Finding the flight that traveled the least distance
+It is a flight from EWR to LHA with the distance of 17 miles.
+```{r}
+flights |> arrange(distance)
+```
+Q6. Does it matter what order you used filter() and arrange() if you're using both? Why/Why not? Think about the results and how much work the functions would have to. 
+## challenging..
+
+A6. 'fliter' comes first vs. 'arrange' comes first
+'filter' sorts out rows with specific conditions, and 'arrange' gives order of the rows with specific conditions
+I think the using both commands with different orders would make no difference because they have separate roles.
+For example, we can test if the result is same in.. 
+filter(arrange(distance)) vs. arrange(filter(distance))
+
+case 1. filter comes first
+```{r}
+flights |> filter(month == 1)
+flights |> arrange(distance)
+```
+
+case 2. arrange comes first
+```{r}
+flights |> arrange(distance)
+flights |> filter(month == 1)
+```
+
+# 3.3.5
+Q1. Campare dep_time, sched_dep_time, and dep_delay. How would you expect those three numbers to be related?
+A1. I think dep_delay = dep_time - scjed_dep_time. 
+
+
+Q2. Brainstorm as many ways as possible to select dep_time, dep_delay, arr_time, and arr_delay from flights.
+A2.
+```{r}
+flights |> select(dep_time, dep_delay, arr_time, arr_delay)
+```
+
+```{r}
+flights |> select(starts_with("dep") | starts_with("arr"))
+```
+```{r}
+flights |> select(dep_time:arr_delay, -contains("sched"))
+```
+```{r}
+flights |> select(ends_with("time") | ends_with("delay"), -contains("sched"), -contains("air"))
+```
+
+
+Q3.  What happends if you specify the name of the same variable multiple times in a select() call?
+A3. It only shows a one column for the repeated variable.
+```{r}
+flights |> select(dep_time, dep_time, dep_time)
+```
+
+Q4. What does the any_of() function do? Why might it be helpful in conjunction with this vector?
+```{r}
+variables <- c("year", "month", "day", "dep_delay", "arr_delay")
+```
+
+A4. According to the link below, 'any_of()' function selects variables that are contained in a character vector. 
+# Refer to https://tidyselect.r-lib.org/reference/all_of.html
+Using 'all_of()' with the conjunction, we can get table with 5 columns that are included in the conjunction. 
+
+```{r}
+variables <- c("year", "month", "day", "dep_delay", "arr_delay")
+flights |> select(all_of(variables))
+```
+
+Q5. Does the result of running the following code surprise you? How do the select helpers deal with upper and lower case by default? How can you change that default?
+
+```{r}
+flights |> select(contains("TIME"))
+```
+
+A5. I was surprised at the result because I expected to see error with the upper case. We can modify helpers 'ignore.case' from default value of "TRUE" to "FALSE". Then, the commands deal with the upper and lower case.
+```{r}
+flights |> select(contains("TIME", ignore.case = FALSE))
+```
+
+Q6. Rename air_time to air_time_min to indicate units of measurement and move it to the beginning of the data frame.
+A6.
+```{r}
+flights |> rename(air_time_min=air_time) |> relocate(air_time_min, .before=year)
+```
+
+Q7. Why doesn't the following work, and what does the error mean?
+```{r}
+flights |> select(tailnum) |> arrange(arr_delay)
+```
+
+A7. The error means there is no 'arr_delay' column to arrange the order. This is because we have removed all columns except 'tailnum' when the command 'select(tailnum)' is exercised. After the command, there is no variable for the second command.
+```{r}
+flights |> select(tailnum)
+```
+
+# 3.5.7.
+Q1.
+A1.
+
+
+Q2.
+A2.
+
+
+Q3.
+A3.
+
+
+Q4.
+A4.
+
+
+Q5.
+A5.
+
+
+Q6.
+A6.
+
+
