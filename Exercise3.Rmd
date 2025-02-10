@@ -365,5 +365,5 @@ Result:
 4     4 a     L        3.5
 5     5 b     K        3.5   
 
-However, the table here is different from the former one. It shows x value, representing additional values of (4,a,L) and (5,b,K) which were erased before as overlapping. 
+However, the table here is different from the former one. It shows x value, representing additional values of (4,a,L) and (5,b,K) which were erased before as overlapping.
 
